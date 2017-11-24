@@ -1,11 +1,14 @@
-//+build !mobilebind
+//+build mobilebind
 
-package main
+package mousetests
 
 import (
+	"bytes"
 	"image/color"
 	"log"
 	"strconv"
+
+	"github.com/Noofbiz/mousetests/assets"
 
 	"engo.io/ecs"
 	"engo.io/engo"
@@ -37,22 +40,26 @@ var (
 )
 
 func (*DefaultScene) Preload() {
-	err := engo.Files.Load("icon.png")
+	b, err := assets.Asset("icon.png")
 	if err != nil {
-		log.Println(err)
+		log.Panic("no such icon")
 	}
-	err = engo.Files.Load("blue.png")
+	engo.Files.LoadReaderData("icon.png", bytes.NewReader(b))
+	b, err = assets.Asset("blue.png")
 	if err != nil {
-		log.Println(err)
+		log.Panic("no such blue")
 	}
-	err = engo.Files.Load("green.png")
+	engo.Files.LoadReaderData("blue.png", bytes.NewReader(b))
+	b, err = assets.Asset("green.png")
 	if err != nil {
-		log.Println(err)
+		log.Panic("no such green")
 	}
-	err = engo.Files.Load("Roboto-Regular.ttf")
+	engo.Files.LoadReaderData("green.png", bytes.NewReader(b))
+	b, err = assets.Asset("Roboto-Regular.ttf")
 	if err != nil {
-		panic(err)
+		log.Panic("no such font")
 	}
+	engo.Files.LoadReaderData("Roboto-Regular.ttf", bytes.NewReader(b))
 }
 
 func (*DefaultScene) Setup(w *ecs.World) {
@@ -451,11 +458,13 @@ func (c *ClickSystem) Update(float32) {
 	}
 }
 
-func main() {
+func Start(width, height int) {
 	opts := engo.RunOptions{
-		Title:  "Mouse Demo",
-		Width:  1024,
-		Height: 640,
+		Title:        "Mouse Demo",
+		Width:        1024,
+		Height:       640,
+		MobileWidth:  width,
+		MobileHeight: height,
 	}
 	engo.Run(opts, &DefaultScene{})
 }
