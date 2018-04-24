@@ -3,7 +3,7 @@
 package androidglue
 
 import (
-	"github.com/Noofbiz/mousetests"
+	"github.com/Noofbiz/MouseTests"
 
 	"engo.io/engo"
 )

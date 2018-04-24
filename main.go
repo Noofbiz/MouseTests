@@ -37,7 +37,7 @@ var (
 )
 
 func (*DefaultScene) Preload() {
-	err := engo.Files.Load("icon.png")
+	err := engo.Files.Load("guy.png")
 	if err != nil {
 		log.Println(err)
 	}
@@ -55,7 +55,8 @@ func (*DefaultScene) Preload() {
 	}
 }
 
-func (*DefaultScene) Setup(w *ecs.World) {
+func (*DefaultScene) Setup(u engo.Updater) {
+	w, _ := u.(*ecs.World)
 	common.SetBackground(color.White)
 
 	w.AddSystem(&common.RenderSystem{})
@@ -183,7 +184,7 @@ func (*DefaultScene) Setup(w *ecs.World) {
 
 	//Guy icon
 	// Retrieve a texture
-	red, err = common.LoadedSprite("icon.png")
+	red, err = common.LoadedSprite("guy.png")
 	if err != nil {
 		log.Println(err)
 	}
@@ -212,7 +213,8 @@ func (*DefaultScene) Setup(w *ecs.World) {
 		Height:   red.Height() * guy.RenderComponent.Scale.Y,
 	}
 	guy.CollisionComponent = common.CollisionComponent{
-		Main: true,
+		Main:  1,
+		Group: 1,
 	}
 
 	// Create an entity
@@ -243,7 +245,8 @@ func (*DefaultScene) Setup(w *ecs.World) {
 		Height:   red.Height() * guy3.RenderComponent.Scale.Y,
 	}
 	guy3.CollisionComponent = common.CollisionComponent{
-		Main: true,
+		Main:  1,
+		Group: 1,
 	}
 
 	// Add it to appropriate systems
@@ -433,7 +436,7 @@ func (c *ClickSystem) Update(float32) {
 				}
 			}
 		} else if c.entities[i].Name == "colidey" {
-			if c.entities[i].Collides {
+			if c.entities[i].Collides == 1 {
 				if c.entities[i].Color == "red" {
 					c.entities[i].Color = "green"
 					c.entities[i].RenderComponent.Drawable = green
