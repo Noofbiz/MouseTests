@@ -23,8 +23,8 @@ func IsRunning() bool {
 	return running
 }
 
-func Touch(x, y, action int) {
-	engo.TouchEvent(x, y, action)
+func Touch(x, y, id, action int) {
+	engo.TouchEvent(x, y, id, action)
 }
 
 func Stop() {

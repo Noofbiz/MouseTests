@@ -401,6 +401,16 @@ type clickEntity struct {
 
 type ClickSystem struct {
 	entities []clickEntity
+	camera   *common.CameraSystem
+}
+
+func (c *ClickSystem) New(w *ecs.World) {
+	for _, system := range w.Systems() {
+		switch sys := system.(type) {
+		case *common.CameraSystem:
+			c.camera = sys
+		}
+	}
 }
 
 func (c *ClickSystem) Add(basic *ecs.BasicEntity, render *common.RenderComponent, space *common.SpaceComponent, mouse *common.MouseComponent, coll *common.CollisionComponent, name, color string) {
@@ -449,16 +459,18 @@ func (c *ClickSystem) Update(float32) {
 				}
 			}
 		} else {
-			c.entities[i].Position.Set(engo.Input.Mouse.X+engo.ResizeXOffset/2, engo.Input.Mouse.Y+engo.ResizeYOffset/2)
+			c.entities[i].Position.X = ((engo.Input.Mouse.X * c.camera.Z() * engo.GameWidth() / engo.WindowWidth()) + (c.camera.X()-(engo.GameWidth()/2)*c.camera.Z())/engo.GetGlobalScale().X)
+			c.entities[i].Position.Y = ((engo.Input.Mouse.Y * c.camera.Z() * engo.GameHeight() / engo.WindowHeight()) + (c.camera.Y()-(engo.GameHeight()/2)*c.camera.Z())/engo.GetGlobalScale().Y)
 		}
 	}
 }
 
 func main() {
 	opts := engo.RunOptions{
-		Title:  "Mouse Demo",
-		Width:  1024,
-		Height: 640,
+		Title:         "Mouse Demo",
+		Width:         1024,
+		Height:        640,
+		ScaleOnResize: true,
 	}
 	engo.Run(opts, &DefaultScene{})
 }
