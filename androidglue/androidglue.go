@@ -5,7 +5,7 @@ package androidglue
 import (
 	"github.com/Noofbiz/MouseTests"
 
-	"engo.io/engo"
+	"github.com/EngoEngine/engo"
 )
 
 var running bool
